@@ -1,0 +1,45 @@
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+delete:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            type: object
+      description: OK
+  security:
+    - oauth2: []
+  tags:
+    - Lists
+  description: Removes a list.
+  operationId: DELETE_lists-id
+  summary: Delete List
+get:
+  responses:
+    '200':
+      description: OK
+  security:
+    - oauth2: []
+  tags:
+    - Lists
+  description: Retrieves the last item from a list ("pop").
+  operationId: GET_lists-id
+  summary: Get Item from List
+post:
+  responses:
+    '200':
+      description: OK
+  security:
+    - oauth2: []
+  tags:
+    - Lists
+  description: >-
+    Adds an item to a list ("push"). The list will be created if it doesn't
+    exist yet.
+  operationId: POST_lists-id
+  summary: Add Item to List

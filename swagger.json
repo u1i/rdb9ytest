@@ -1,0 +1,852 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.1",
+        "title": "bambleweeny",
+        "description": ""
+    },
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "securityDefinitions": {
+        "oauth2": {
+            "type": "oauth2",
+            "flow": "password",
+            "scopes": {},
+            "tokenUrl": "/auth/token"
+        }
+    },
+    "paths": {
+        "/auth/token": {
+            "post": {
+                "operationId": "POST_auth-token",
+                "summary": "Get Access Token",
+                "tags": [
+                    "Authentication"
+                ],
+                "description": "This endpoint is used to retrieve an access token to perform authenticated requests against the 'resources' endpoints. Login with username and password. Add ?raw to just get the token without the JSON wrapper.",
+                "parameters": [
+                    {
+                        "name": "raw",
+                        "in": "query",
+                        "type": "string"
+                    },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "username": "joe",
+                                "password": "secret"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "access_token": {
+                                    "type": "string"
+                                },
+                                "token_type": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": {
+                                "access_token": "token",
+                                "token_type": "bearer"
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": {
+                                "message": "info"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/keys/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "operationId": "READ-key",
+                "summary": "Read Key",
+                "tags": [
+                    "Keys"
+                ],
+                "description": "Read a key.\n\nAdministrators can access & manipulate keys from users by adding ?userid=<user_id> to the request. E.g. /keys/foo?userid=2",
+                "produces": [
+                    "text/plain"
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            },
+            "put": {
+                "operationId": "WRITE-key",
+                "summary": "Write Key",
+                "tags": [
+                    "Keys"
+                ],
+                "description": "Set key to a specific value. Key names contain numbers, characters, underscores and colons. Valid key names are 'foo', 'my_key1', 'debug:b1:Hello' 'RogerRabbit'.\n\nAdministrators can access & manipulate keys from users by adding ?userid=<user_id> to the request. E.g. /keys/foo?userid=2",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            },
+            "delete": {
+                "operationId": "DEL-key",
+                "summary": "Delete Key",
+                "tags": [
+                    "Keys"
+                ],
+                "description": "Deletes a key.\n\nAdministrators can delete keys from users by adding ?userid=<user_id> to the request. E.g. /keys/foo?userid=2",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            }
+        },
+        "/incr/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "operationId": "INCR-key",
+                "summary": "Increase Key",
+                "tags": [
+                    "Keys"
+                ],
+                "description": "Increments the number stored at key by one.",
+                "produces": [
+                    "text/plain"
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            }
+        },
+        "/keys": {
+            "get": {
+                "operationId": "LIST-keys",
+                "summary": "List Keys",
+                "tags": [
+                    "Keys"
+                ],
+                "description": "List all keys.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "keys": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "owner": {
+                                                "type": "string"
+                                            },
+                                            "key": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": {
+                                "keys": [
+                                    {
+                                        "owner": "1",
+                                        "key": "foo"
+                                    },
+                                    {
+                                        "owner": "1",
+                                        "key": "fred"
+                                    },
+                                    {
+                                        "owner": "2",
+                                        "key": "system:debug"
+                                    },
+                                    {
+                                        "owner": "2",
+                                        "key": "test"
+                                    },
+                                    {
+                                        "owner": "2",
+                                        "key": "myqueue"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            }
+        },
+        "/lists/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "post": {
+                "operationId": "POST_lists-id",
+                "summary": "Add Item to List",
+                "tags": [
+                    "Lists"
+                ],
+                "description": "Adds an item to a list (\"push\"). The list will be created if it doesn't exist yet.",
+                "consumes": [
+                    "text/plain"
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            },
+            "get": {
+                "operationId": "GET_lists-id",
+                "summary": "Get Item from List",
+                "tags": [
+                    "Lists"
+                ],
+                "description": "Retrieves the last item from a list (\"pop\").",
+                "consumes": [
+                    "text/plain"
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            },
+            "delete": {
+                "operationId": "DELETE_lists-id",
+                "summary": "Delete List",
+                "tags": [
+                    "Lists"
+                ],
+                "description": "Removes a list.",
+                "consumes": [
+                    "text/plain"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            }
+        },
+        "/lists": {
+            "get": {
+                "operationId": "GET_lists",
+                "summary": "Get All Lists",
+                "tags": [
+                    "Lists"
+                ],
+                "description": "Gets all lists.",
+                "consumes": [
+                    "text/plain"
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            }
+        },
+        "/routes": {
+            "post": {
+                "operationId": "CREATE-route",
+                "summary": "Create Route",
+                "tags": [
+                    "Routes"
+                ],
+                "description": "Creates a public endpoint for a key.",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "key": {
+                                    "type": "string"
+                                },
+                                "content_type": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "key": "my_key",
+                                "content_type": "text/html"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "info": {
+                                    "type": "string"
+                                },
+                                "path": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": {
+                                "info": "ok",
+                                "path": "/routes/522df028-8d01-444f-85a3-cb60b28de0ea"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            }
+        },
+        "/routes/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "get": {
+                "operationId": "ROUTE-key",
+                "summary": "Read Key",
+                "tags": [
+                    "Routes"
+                ],
+                "description": "Reads a key from a public route.",
+                "responses": {
+                    "default": {
+                        "description": "",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/bins": {
+            "post": {
+                "operationId": "CREATE-bin",
+                "summary": "Create Bin",
+                "tags": [
+                    "Bins"
+                ],
+                "description": "Creates a public bin to POST content to. The data will be saved in the specified list.",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "list": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "list": "my_list"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "info": {
+                                    "type": "string"
+                                },
+                                "path": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": {
+                                "info": "ok",
+                                "path": "/bins/522df028-8d01-444f-85a3-cb60b28de0ea"
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            }
+        },
+        "/bins/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "post": {
+                "operationId": "POST-bin",
+                "summary": "Post to Bin",
+                "tags": [
+                    "Bins"
+                ],
+                "description": "POST content to a public bin.",
+                "responses": {
+                    "default": {
+                        "description": "",
+                        "schema": {}
+                    }
+                }
+            }
+        },
+        "/users": {
+            "post": {
+                "operationId": "POST-user",
+                "summary": "Create User",
+                "tags": [
+                    "Administration"
+                ],
+                "description": "Create a user (or keyspace). The new user can then make authenticated requests with access tokens retrieved from the /auth/token endpoint.",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "username": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "username": "user1",
+                                "password": "changeme"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "id": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": {
+                                "id": "1"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            },
+            "get": {
+                "operationId": "LIST-users",
+                "summary": "List Users",
+                "tags": [
+                    "Administration"
+                ],
+                "description": "List all users in the system.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "users": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "id": {
+                                                "type": "string"
+                                            },
+                                            "username": {
+                                                "type": "string"
+                                            },
+                                            "quota": {
+                                                "type": "string"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": {
+                                "output": [
+                                    {
+                                        "id": "1",
+                                        "username": "user1",
+                                        "quota": "0"
+                                    },
+                                    {
+                                        "id": "2",
+                                        "username": "shared",
+                                        "quota": "0"
+                                    }
+                                ]
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            }
+        },
+        "/users/{id}": {
+            "parameters": [
+                {
+                    "name": "id",
+                    "in": "path",
+                    "required": true,
+                    "type": "string"
+                }
+            ],
+            "put": {
+                "operationId": "PUT-user",
+                "summary": "Set Quota",
+                "tags": [
+                    "Administration"
+                ],
+                "description": "Set the quota for a user (number of resources a user can have).",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "quota": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "quota"
+                            ],
+                            "example": {
+                                "quota": "19"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "examples": {
+                            "application/json": {
+                                "message": "quota updated"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            },
+            "get": {
+                "operationId": "GET-user",
+                "summary": "Get User",
+                "tags": [
+                    "Administration"
+                ],
+                "description": "Get a user record identified by a numceric user id.",
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "quota": {
+                                    "type": "string"
+                                }
+                            },
+                            "required": [
+                                "email",
+                                "quota"
+                            ]
+                        },
+                        "examples": {
+                            "application/json": {
+                                "email": "me@privacy.net",
+                                "quota": "19"
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "",
+                        "schema": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            },
+            "delete": {
+                "operationId": "DELETE-user",
+                "summary": "Delete User",
+                "tags": [
+                    "Administration"
+                ],
+                "description": "Delete a user record identified by a numceric user id.",
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "401": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            }
+        },
+        "/config/admin": {
+            "put": {
+                "operationId": "CHANGE-admin-pw",
+                "summary": "Change Admin Password",
+                "tags": [
+                    "Administration"
+                ],
+                "description": "Update the admin password - default password is 'changeme'.",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "password": {
+                                    "type": "string"
+                                }
+                            },
+                            "example": {
+                                "password": "c5XU3l901Jp"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "400": {
+                        "description": ""
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            }
+        },
+        "/info": {
+            "get": {
+                "operationId": "GET-info",
+                "summary": "Get Info",
+                "tags": [
+                    "Administration"
+                ],
+                "description": "Gets detailed information on the backend Redis connection, including memory used, number of connections etc.",
+                "responses": {
+                    "default": {
+                        "description": "",
+                        "schema": {}
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            }
+        },
+        "/save": {
+            "get": {
+                "operationId": "SAVE",
+                "summary": "Save to Disk",
+                "tags": [
+                    "Administration"
+                ],
+                "description": "Triggers a save to disk for the backend Redis in-memory database.",
+                "responses": {
+                    "default": {
+                        "description": "",
+                        "schema": {}
+                    }
+                },
+                "security": [
+                    {
+                        "oauth2": []
+                    }
+                ]
+            }
+        }
+    },
+    "definitions": {}
+}

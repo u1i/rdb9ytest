@@ -1,0 +1,23 @@
+put:
+  responses:
+    '200':
+      description: OK
+    '400':
+      description: Bad Request
+  security:
+    - oauth2: []
+  tags:
+    - Administration
+  description: Update the admin password - default password is 'changeme'.
+  operationId: CHANGE-admin-pw
+  requestBody:
+    content:
+      application/json:
+        schema:
+          example:
+            password: c5XU3l901Jp
+          properties:
+            password:
+              type: string
+          type: object
+  summary: Change Admin Password

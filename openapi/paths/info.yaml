@@ -1,0 +1,16 @@
+get:
+  responses:
+    default:
+      content:
+        application/json:
+          schema: {}
+      description: Default response
+  security:
+    - oauth2: []
+  tags:
+    - Administration
+  description: >-
+    Gets detailed information on the backend Redis connection, including memory
+    used, number of connections etc.
+  operationId: GET-info
+  summary: Get Info

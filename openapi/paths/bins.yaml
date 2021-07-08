@@ -1,0 +1,37 @@
+post:
+  responses:
+    '200':
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                info: ok
+                path: /bins/522df028-8d01-444f-85a3-cb60b28de0ea
+          schema:
+            properties:
+              info:
+                type: string
+              path:
+                type: string
+            type: object
+      description: OK
+  security:
+    - oauth2: []
+  tags:
+    - Bins
+  description: >-
+    Creates a public bin to POST content to. The data will be saved in the
+    specified list.
+  operationId: CREATE-bin
+  requestBody:
+    content:
+      application/json:
+        schema:
+          example:
+            list: my_list
+          properties:
+            list:
+              type: string
+          type: object
+  summary: Create Bin

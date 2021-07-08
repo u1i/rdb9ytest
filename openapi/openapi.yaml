@@ -1,0 +1,45 @@
+openapi: 3.0.0
+info:
+  description: ''
+  title: bambleweeny
+  version: '1.1'
+servers: []
+paths:
+  /auth/token:
+    $ref: paths/auth@token.yaml
+  /bins:
+    $ref: paths/bins.yaml
+  '/bins/{id}':
+    $ref: 'paths/bins@{id}.yaml'
+  /config/admin:
+    $ref: paths/config@admin.yaml
+  '/incr/{id}':
+    $ref: 'paths/incr@{id}.yaml'
+  /info:
+    $ref: paths/info.yaml
+  /keys:
+    $ref: paths/keys.yaml
+  '/keys/{id}':
+    $ref: 'paths/keys@{id}.yaml'
+  /lists:
+    $ref: paths/lists.yaml
+  '/lists/{id}':
+    $ref: 'paths/lists@{id}.yaml'
+  /routes:
+    $ref: paths/routes.yaml
+  '/routes/{id}':
+    $ref: 'paths/routes@{id}.yaml'
+  /save:
+    $ref: paths/save.yaml
+  /users:
+    $ref: paths/users.yaml
+  '/users/{id}':
+    $ref: 'paths/users@{id}.yaml'
+components:
+  securitySchemes:
+    oauth2:
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: /auth/token
+      type: oauth2

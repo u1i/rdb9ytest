@@ -1,0 +1,18 @@
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+post:
+  responses:
+    default:
+      content:
+        application/json:
+          schema: {}
+      description: Default response
+  tags:
+    - Bins
+  description: POST content to a public bin.
+  operationId: POST-bin
+  summary: Post to Bin

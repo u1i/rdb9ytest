@@ -1,0 +1,38 @@
+post:
+  responses:
+    '200':
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                info: ok
+                path: /routes/522df028-8d01-444f-85a3-cb60b28de0ea
+          schema:
+            properties:
+              info:
+                type: string
+              path:
+                type: string
+            type: object
+      description: OK
+  security:
+    - oauth2: []
+  tags:
+    - Routes
+  description: Creates a public endpoint for a key.
+  operationId: CREATE-route
+  requestBody:
+    content:
+      application/json:
+        schema:
+          example:
+            content_type: text/html
+            key: my_key
+          properties:
+            content_type:
+              type: string
+            key:
+              type: string
+          type: object
+  summary: Create Route

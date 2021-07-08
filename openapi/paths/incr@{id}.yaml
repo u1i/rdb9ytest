@@ -1,0 +1,17 @@
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+get:
+  responses:
+    '200':
+      description: OK
+  security:
+    - oauth2: []
+  tags:
+    - Keys
+  description: Increments the number stored at key by one.
+  operationId: INCR-key
+  summary: Increase Key

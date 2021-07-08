@@ -1,0 +1,78 @@
+get:
+  responses:
+    '200':
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                output:
+                  - id: '1'
+                    quota: '0'
+                    username: user1
+                  - id: '2'
+                    quota: '0'
+                    username: shared
+          schema:
+            properties:
+              users:
+                items:
+                  properties:
+                    id:
+                      type: string
+                    quota:
+                      type: string
+                    username:
+                      type: string
+                  type: object
+                type: array
+            type: object
+      description: OK
+    '401':
+      description: Unauthorized
+  security:
+    - oauth2: []
+  tags:
+    - Administration
+  description: List all users in the system.
+  operationId: LIST-users
+  summary: List Users
+post:
+  responses:
+    '201':
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                id: '1'
+          schema:
+            properties:
+              id:
+                type: string
+            type: object
+      description: Created
+    '401':
+      description: Unauthorized
+  security:
+    - oauth2: []
+  tags:
+    - Administration
+  description: >-
+    Create a user (or keyspace). The new user can then make authenticated
+    requests with access tokens retrieved from the /auth/token endpoint.
+  operationId: POST-user
+  requestBody:
+    content:
+      application/json:
+        schema:
+          example:
+            password: changeme
+            username: user1
+          properties:
+            password:
+              type: string
+            username:
+              type: string
+          type: object
+  summary: Create User

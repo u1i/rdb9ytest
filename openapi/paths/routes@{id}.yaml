@@ -1,0 +1,18 @@
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+get:
+  responses:
+    default:
+      content:
+        application/json:
+          schema: {}
+      description: Default response
+  tags:
+    - Routes
+  description: Reads a key from a public route.
+  operationId: ROUTE-key
+  summary: Read Key

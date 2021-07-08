@@ -1,0 +1,89 @@
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+delete:
+  responses:
+    '200':
+      description: OK
+    '401':
+      description: Unauthorized
+  security:
+    - oauth2: []
+  tags:
+    - Administration
+  description: Delete a user record identified by a numceric user id.
+  operationId: DELETE-user
+  summary: Delete User
+get:
+  responses:
+    '200':
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                email: me@privacy.net
+                quota: '19'
+          schema:
+            properties:
+              email:
+                type: string
+              quota:
+                type: string
+            required:
+              - email
+              - quota
+            type: object
+      description: OK
+    '401':
+      content:
+        application/json:
+          schema:
+            type: object
+      description: Unauthorized
+  security:
+    - oauth2: []
+  tags:
+    - Administration
+  description: Get a user record identified by a numceric user id.
+  operationId: GET-user
+  summary: Get User
+put:
+  responses:
+    '200':
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                message: quota updated
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+      description: OK
+    '401':
+      description: Unauthorized
+  security:
+    - oauth2: []
+  tags:
+    - Administration
+  description: Set the quota for a user (number of resources a user can have).
+  operationId: PUT-user
+  requestBody:
+    content:
+      application/json:
+        schema:
+          example:
+            quota: '19'
+          properties:
+            quota:
+              type: string
+          required:
+            - quota
+          type: object
+  summary: Set Quota

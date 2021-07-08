@@ -1,0 +1,14 @@
+get:
+  responses:
+    default:
+      content:
+        application/json:
+          schema: {}
+      description: Default response
+  security:
+    - oauth2: []
+  tags:
+    - Administration
+  description: Triggers a save to disk for the backend Redis in-memory database.
+  operationId: SAVE
+  summary: Save to Disk

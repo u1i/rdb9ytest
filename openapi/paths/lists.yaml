@@ -1,0 +1,11 @@
+get:
+  responses:
+    '200':
+      description: OK
+  security:
+    - oauth2: []
+  tags:
+    - Lists
+  description: Gets all lists.
+  operationId: GET_lists
+  summary: Get All Lists

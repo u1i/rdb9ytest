@@ -1,0 +1,57 @@
+post:
+  parameters:
+    - in: query
+      name: raw
+      schema:
+        type: string
+  responses:
+    '200':
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                access_token: token
+                token_type: bearer
+          schema:
+            properties:
+              access_token:
+                type: string
+              token_type:
+                type: string
+            type: object
+      description: OK
+    '403':
+      content:
+        application/json:
+          examples:
+            response:
+              value:
+                message: info
+          schema:
+            properties:
+              message:
+                type: string
+            type: object
+      description: Forbidden
+  tags:
+    - Authentication
+  description: >-
+    This endpoint is used to retrieve an access token to perform authenticated
+    requests against the 'resources' endpoints. Login with username and
+    password. Add ?raw to just get the token without the JSON wrapper.
+  operationId: POST_auth-token
+  requestBody:
+    content:
+      application/json:
+        schema:
+          example:
+            password: secret
+            username: joe
+          properties:
+            password:
+              type: string
+            username:
+              type: string
+          type: object
+  summary: Get Access Token

@@ -1,0 +1,5 @@
+flows:
+  password:
+    scopes: {}
+    tokenUrl: /auth/token
+type: oauth2

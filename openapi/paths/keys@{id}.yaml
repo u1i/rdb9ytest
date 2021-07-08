@@ -1,0 +1,60 @@
+parameters:
+  - in: path
+    name: id
+    required: true
+    schema:
+      type: string
+delete:
+  responses:
+    '200':
+      content:
+        application/json:
+          schema:
+            type: object
+      description: OK
+  security:
+    - oauth2: []
+  tags:
+    - Keys
+  description: >-
+    Deletes a key.
+
+
+    Administrators can delete keys from users by adding ?userid=<user_id> to the
+    request. E.g. /keys/foo?userid=2
+  operationId: DEL-key
+  summary: Delete Key
+get:
+  responses:
+    '200':
+      description: OK
+  security:
+    - oauth2: []
+  tags:
+    - Keys
+  description: >-
+    Read a key.
+
+
+    Administrators can access & manipulate keys from users by adding
+    ?userid=<user_id> to the request. E.g. /keys/foo?userid=2
+  operationId: READ-key
+  summary: Read Key
+put:
+  responses:
+    '200':
+      description: OK
+  security:
+    - oauth2: []
+  tags:
+    - Keys
+  description: >-
+    Set key to a specific value. Key names contain numbers, characters,
+    underscores and colons. Valid key names are 'foo', 'my_key1',
+    'debug:b1:Hello' 'RogerRabbit'.
+
+
+    Administrators can access & manipulate keys from users by adding
+    ?userid=<user_id> to the request. E.g. /keys/foo?userid=2
+  operationId: WRITE-key
+  summary: Write Key
