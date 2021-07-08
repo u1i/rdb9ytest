@@ -1,0 +1,591 @@
+openapi: 3.0.0
+info:
+  description: ''
+  title: bambleweeny
+  version: '1.1'
+servers: []
+paths:
+  /auth/token:
+    post:
+      parameters:
+        - in: query
+          name: raw
+          schema:
+            type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    access_token: token
+                    token_type: bearer
+              schema:
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                type: object
+          description: OK
+        '403':
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    message: info
+              schema:
+                properties:
+                  message:
+                    type: string
+                type: object
+          description: Forbidden
+      tags:
+        - Authentication
+      description: >-
+        This endpoint is used to retrieve an access token to perform
+        authenticated requests against the 'resources' endpoints. Login with
+        username and password. Add ?raw to just get the token without the JSON
+        wrapper.
+      operationId: POST_auth-token
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+                password: secret
+                username: joe
+              properties:
+                password:
+                  type: string
+                username:
+                  type: string
+              type: object
+      summary: Get Access Token
+  /bins:
+    post:
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    info: ok
+                    path: /bins/522df028-8d01-444f-85a3-cb60b28de0ea
+              schema:
+                properties:
+                  info:
+                    type: string
+                  path:
+                    type: string
+                type: object
+          description: OK
+      security:
+        - oauth2: []
+      tags:
+        - Bins
+      description: >-
+        Creates a public bin to POST content to. The data will be saved in the
+        specified list.
+      operationId: CREATE-bin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+                list: my_list
+              properties:
+                list:
+                  type: string
+              type: object
+      summary: Create Bin
+  '/bins/{id}':
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    post:
+      responses:
+        default:
+          content:
+            application/json:
+              schema: {}
+          description: Default response
+      tags:
+        - Bins
+      description: POST content to a public bin.
+      operationId: POST-bin
+      summary: Post to Bin
+  /config/admin:
+    put:
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+      security:
+        - oauth2: []
+      tags:
+        - Administration
+      description: Update the admin password - default password is 'changeme'.
+      operationId: CHANGE-admin-pw
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+                password: c5XU3l901Jp
+              properties:
+                password:
+                  type: string
+              type: object
+      summary: Change Admin Password
+  '/incr/{id}':
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        '200':
+          description: OK
+      security:
+        - oauth2: []
+      tags:
+        - Keys
+      description: Increments the number stored at key by one.
+      operationId: INCR-key
+      summary: Increase Key
+  /info:
+    get:
+      responses:
+        default:
+          content:
+            application/json:
+              schema: {}
+          description: Default response
+      security:
+        - oauth2: []
+      tags:
+        - Administration
+      description: >-
+        Gets detailed information on the backend Redis connection, including
+        memory used, number of connections etc.
+      operationId: GET-info
+      summary: Get Info
+  /keys:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    keys:
+                      - key: foo
+                        owner: '1'
+                      - key: fred
+                        owner: '1'
+                      - key: 'system:debug'
+                        owner: '2'
+                      - key: test
+                        owner: '2'
+                      - key: myqueue
+                        owner: '2'
+              schema:
+                properties:
+                  keys:
+                    items:
+                      properties:
+                        key:
+                          type: string
+                        owner:
+                          type: string
+                      type: object
+                    type: array
+                type: object
+          description: OK
+      security:
+        - oauth2: []
+      tags:
+        - Keys
+      description: List all keys.
+      operationId: LIST-keys
+      summary: List Keys
+  '/keys/{id}':
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    delete:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: OK
+      security:
+        - oauth2: []
+      tags:
+        - Keys
+      description: >-
+        Deletes a key.
+
+
+        Administrators can delete keys from users by adding ?userid=<user_id> to
+        the request. E.g. /keys/foo?userid=2
+      operationId: DEL-key
+      summary: Delete Key
+    get:
+      responses:
+        '200':
+          description: OK
+      security:
+        - oauth2: []
+      tags:
+        - Keys
+      description: >-
+        Read a key.
+
+
+        Administrators can access & manipulate keys from users by adding
+        ?userid=<user_id> to the request. E.g. /keys/foo?userid=2
+      operationId: READ-key
+      summary: Read Key
+    put:
+      responses:
+        '200':
+          description: OK
+      security:
+        - oauth2: []
+      tags:
+        - Keys
+      description: >-
+        Set key to a specific value. Key names contain numbers, characters,
+        underscores and colons. Valid key names are 'foo', 'my_key1',
+        'debug:b1:Hello' 'RogerRabbit'.
+
+
+        Administrators can access & manipulate keys from users by adding
+        ?userid=<user_id> to the request. E.g. /keys/foo?userid=2
+      operationId: WRITE-key
+      summary: Write Key
+  /lists:
+    get:
+      responses:
+        '200':
+          description: OK
+      security:
+        - oauth2: []
+      tags:
+        - Lists
+      description: Gets all lists.
+      operationId: GET_lists
+      summary: Get All Lists
+  '/lists/{id}':
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    delete:
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: OK
+      security:
+        - oauth2: []
+      tags:
+        - Lists
+      description: Removes a list.
+      operationId: DELETE_lists-id
+      summary: Delete List
+    get:
+      responses:
+        '200':
+          description: OK
+      security:
+        - oauth2: []
+      tags:
+        - Lists
+      description: Retrieves the last item from a list ("pop").
+      operationId: GET_lists-id
+      summary: Get Item from List
+    post:
+      responses:
+        '200':
+          description: OK
+      security:
+        - oauth2: []
+      tags:
+        - Lists
+      description: >-
+        Adds an item to a list ("push"). The list will be created if it doesn't
+        exist yet.
+      operationId: POST_lists-id
+      summary: Add Item to List
+  /routes:
+    post:
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    info: ok
+                    path: /routes/522df028-8d01-444f-85a3-cb60b28de0ea
+              schema:
+                properties:
+                  info:
+                    type: string
+                  path:
+                    type: string
+                type: object
+          description: OK
+      security:
+        - oauth2: []
+      tags:
+        - Routes
+      description: Creates a public endpoint for a key.
+      operationId: CREATE-route
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+                content_type: text/html
+                key: my_key
+              properties:
+                content_type:
+                  type: string
+                key:
+                  type: string
+              type: object
+      summary: Create Route
+  '/routes/{id}':
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    get:
+      responses:
+        default:
+          content:
+            application/json:
+              schema: {}
+          description: Default response
+      tags:
+        - Routes
+      description: Reads a key from a public route.
+      operationId: ROUTE-key
+      summary: Read Key
+  /save:
+    get:
+      responses:
+        default:
+          content:
+            application/json:
+              schema: {}
+          description: Default response
+      security:
+        - oauth2: []
+      tags:
+        - Administration
+      description: Triggers a save to disk for the backend Redis in-memory database.
+      operationId: SAVE
+      summary: Save to Disk
+  /users:
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    output:
+                      - id: '1'
+                        quota: '0'
+                        username: user1
+                      - id: '2'
+                        quota: '0'
+                        username: shared
+              schema:
+                properties:
+                  users:
+                    items:
+                      properties:
+                        id:
+                          type: string
+                        quota:
+                          type: string
+                        username:
+                          type: string
+                      type: object
+                    type: array
+                type: object
+          description: OK
+        '401':
+          description: Unauthorized
+      security:
+        - oauth2: []
+      tags:
+        - Administration
+      description: List all users in the system.
+      operationId: LIST-users
+      summary: List Users
+    post:
+      responses:
+        '201':
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    id: '1'
+              schema:
+                properties:
+                  id:
+                    type: string
+                type: object
+          description: Created
+        '401':
+          description: Unauthorized
+      security:
+        - oauth2: []
+      tags:
+        - Administration
+      description: >-
+        Create a user (or keyspace). The new user can then make authenticated
+        requests with access tokens retrieved from the /auth/token endpoint.
+      operationId: POST-user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+                password: changeme
+                username: user1
+              properties:
+                password:
+                  type: string
+                username:
+                  type: string
+              type: object
+      summary: Create User
+  '/users/{id}':
+    parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+    delete:
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+      security:
+        - oauth2: []
+      tags:
+        - Administration
+      description: Delete a user record identified by a numceric user id.
+      operationId: DELETE-user
+      summary: Delete User
+    get:
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    email: me@privacy.net
+                    quota: '19'
+              schema:
+                properties:
+                  email:
+                    type: string
+                  quota:
+                    type: string
+                required:
+                  - email
+                  - quota
+                type: object
+          description: OK
+        '401':
+          content:
+            application/json:
+              schema:
+                type: object
+          description: Unauthorized
+      security:
+        - oauth2: []
+      tags:
+        - Administration
+      description: Get a user record identified by a numceric user id.
+      operationId: GET-user
+      summary: Get User
+    put:
+      responses:
+        '200':
+          content:
+            application/json:
+              examples:
+                response:
+                  value:
+                    message: quota updated
+              schema:
+                properties:
+                  message:
+                    type: string
+                type: object
+          description: OK
+        '401':
+          description: Unauthorized
+      security:
+        - oauth2: []
+      tags:
+        - Administration
+      description: Set the quota for a user (number of resources a user can have).
+      operationId: PUT-user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+                quota: '19'
+              properties:
+                quota:
+                  type: string
+              required:
+                - quota
+              type: object
+      summary: Set Quota
+components:
+  securitySchemes:
+    oauth2:
+      flows:
+        password:
+          scopes: {}
+          tokenUrl: /auth/token
+      type: oauth2
